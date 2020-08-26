@@ -1,17 +1,24 @@
-const dueDate = 15;
-
 const loans = {
   "1": {
-    status: "ACTIVE", // "CLOSED"
+    orderId: "orderId", // orderId + itemId = primary key
+    itemId: "itemId", // sort key, e.g. payment-<id>
+    status: "active", // "active" or "closed"
     price: 9900,
     down: 1000,
     p: 8900, // principal
     i: 10, // interest
     n: 48, // terms
-    dueDate: 15,
     tax: 96, // annual property tax
     fee: 15, // monthly fee
-    date: "3/15/2020" // starting date: do NOT use loan start date, use down payment date
+    date: "3/15/2020", // starting date: do NOT use loan start date, use down payment date
+    dueDate: 15,
+    userId: "uuid-1234",
+    receiptId: "receiptId", // for minting ERC721 at the end
+    buyerWallet: "0x0" // user Ethereum wallet address
+    // for combining transaction table, we need the following keys
+    // or, we can retrieve from payment-<id>
+    // type: "REGULAR", // DOWN_PAYMENG, EXTRA_PAYMENT, or REGULAR
+    // amount: 1000.00, // payment amount
   }
 };
 
@@ -133,4 +140,4 @@ const transactions = [
   }
 ];
 
-module.exports = { dueDate, loans, transactions };
+module.exports = { loans, transactions };

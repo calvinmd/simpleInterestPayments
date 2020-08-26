@@ -5,7 +5,7 @@ const _ = require("lodash");
 const moment = require("moment");
 
 const data = require("./data");
-const { loans, transactions, dueDate } = data;
+const { loans, transactions } = data;
 
 // show - or 0 or 0.00, put it in one place
 const ZERO = "-";
@@ -34,19 +34,28 @@ const getRegularPayment = (loan = {}) => {
   };
 };
 
+const getMonth = (d) => moment(new Date(d)).format("M");
+
 // TODO: ignoring the "status" field right now, or only process "PAID" tx
 const getTransactions = ({ transactions = [], loan = {} }) => {
-  const { p, i, tax, fee, down } = loan;
+  const { p, i, tax, fee, down, date } = loan;
   const taxAmount = (+tax / 12).toFixed(2);
   const feeAmount = (+fee).toFixed(2);
   const downAmount = (+down).toFixed(2);
+  // Interest is calculated based on the month end balance
+  let monthEndBalance = p;
+  let month = getMonth(date); // month in number
+  console.log("zzz monthEndBalance: ", monthEndBalance);
+  console.log("zzz month: ", month);
   let balance = p;
   // compact removes all falsey values from array
   return _.compact(
     transactions.map((tx) => {
       const { date, type, amount } = tx;
-      const amountDisplay = (+amount).toFixed(2);
       if (+amount <= 0) return null;
+      const currentMonth = getMonth(date);
+      console.log("zzz currentMonth: ", currentMonth);
+      const amountDisplay = (+amount).toFixed(2);
       if (type === "DOWN_PAYMENT") {
         return {
           date,
@@ -62,6 +71,9 @@ const getTransactions = ({ transactions = [], loan = {} }) => {
       }
       if (type === "EXTRA_PAYMENT") {
         balance = (+balance - +amount).toFixed(2);
+        if (month === currentMonth) {
+          monthEndBalance = +balance;
+        }
         return {
           date,
           type,
@@ -81,9 +93,12 @@ const getTransactions = ({ transactions = [], loan = {} }) => {
           +feeAmount
         ).toFixed(2);
         const mi = i / 12 / 100;
-        const interest = (balance * mi).toFixed(2);
+        const interest = (+monthEndBalance * mi).toFixed(2);
         const principal = (+principalAndInterest - +interest).toFixed(2);
         balance = (+balance - +principal).toFixed(2);
+        // New regular payment, let's update month & balances
+        month = currentMonth;
+        monthEndBalance = +balance;
         return {
           date,
           type,
@@ -104,7 +119,7 @@ const getTransactions = ({ transactions = [], loan = {} }) => {
 };
 
 // Always set the day of the month to 18, moment uses "date" instead of "day"
-const getNextPaymentDate = (d) =>
+const getNextPaymentDate = (d, dueDate) =>
   moment(new Date(d)).add(1, "month").set("date", dueDate).format("L");
 
 const getRemainingPayments = ({
@@ -119,7 +134,8 @@ const getRemainingPayments = ({
     principalAndInterest,
     taxAmount
   } = monthlyPayment;
-  const { i } = loan;
+  const { dueDate, i } = loan;
+  console.log("zzz dueDate: ", dueDate);
   const mi = i / 12 / 100;
   // find last regular payment date
   const lastTx = _.last(transactions.filter((tx) => tx.type === "REGULAR"));
@@ -127,7 +143,7 @@ const getRemainingPayments = ({
 
   const type = "REGULAR"; // use Constant
   const remaining = [];
-  let nextPaymentDate = getNextPaymentDate(lastTxDate);
+  let nextPaymentDate = getNextPaymentDate(lastTxDate, dueDate);
   let balance = +currentBalance;
   while (+balance > 0) {
     const interest = (balance * mi).toFixed(2);
@@ -145,7 +161,7 @@ const getRemainingPayments = ({
         fee: feeAmount,
         totalPayment
       });
-      nextPaymentDate = getNextPaymentDate(nextPaymentDate);
+      nextPaymentDate = getNextPaymentDate(nextPaymentDate, dueDate);
     } else {
       // TODO: last payment!
       remaining.push({
