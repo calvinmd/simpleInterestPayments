@@ -1,3 +1,7 @@
+# Simple Interest Payment Calculator
+
+Calculator for simple interest payments with support for extra payments
+
 # fastify-starter
 
 A starter template for creating an HTTP Fastify server with JavaScript. It includes example routes that demonstrate some of the basic features of Fastify. It also comes with unit tests powered by [tap](https://node-tap.org).
