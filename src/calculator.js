@@ -45,8 +45,6 @@ const getTransactions = ({ transactions = [], loan = {} }) => {
   // Interest is calculated based on the month end balance
   let monthEndBalance = p;
   let month = getMonth(date); // month in number
-  console.log("zzz monthEndBalance: ", monthEndBalance);
-  console.log("zzz month: ", month);
   let balance = p;
   // compact removes all falsey values from array
   return _.compact(
@@ -54,7 +52,6 @@ const getTransactions = ({ transactions = [], loan = {} }) => {
       const { date, type, amount } = tx;
       if (+amount <= 0) return null;
       const currentMonth = getMonth(date);
-      console.log("zzz currentMonth: ", currentMonth);
       const amountDisplay = (+amount).toFixed(2);
       if (type === "DOWN_PAYMENT") {
         return {
@@ -135,7 +132,6 @@ const getRemainingPayments = ({
     taxAmount
   } = monthlyPayment;
   const { dueDate, i } = loan;
-  console.log("zzz dueDate: ", dueDate);
   const mi = i / 12 / 100;
   // find last regular payment date
   const lastTx = _.last(transactions.filter((tx) => tx.type === "REGULAR"));

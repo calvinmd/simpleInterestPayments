@@ -19,7 +19,6 @@ const getCsv = (loan = {}) => {
 
   const csv = [header];
   csv.push(txHistory.map((tx) => values(tx).join(",")));
-  console.log("zzz csv: ", csv);
   csv.push(upcomingPayments.map((tx) => values(tx).join(",")));
   return flatten(csv).join("\n");
 };
