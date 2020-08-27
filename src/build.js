@@ -4,6 +4,7 @@
 const fastify = require("fastify");
 
 const calculator = require("./calculator");
+const getCsv = require("./csv");
 const { loans } = require("./data");
 
 function build(opts) {
@@ -26,6 +27,22 @@ function build(opts) {
       const { id } = request.query;
       const loan = loans[id];
       return calculator(loan);
+    }
+  );
+
+  app.get(
+    "/csv",
+    {
+      query: {
+        id: {
+          type: "string"
+        }
+      }
+    },
+    async (request, reply) => {
+      const { id } = request.query;
+      const loan = loans[id];
+      return getCsv(loan);
     }
   );
 
