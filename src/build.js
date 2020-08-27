@@ -4,6 +4,7 @@
 const fastify = require("fastify");
 
 const calculator = require("./calculator");
+const { loans } = require("./data");
 
 function build(opts) {
   const app = fastify(opts);
@@ -23,7 +24,8 @@ function build(opts) {
     },
     async (request, reply) => {
       const { id } = request.query;
-      return calculator(id);
+      const loan = loans[id];
+      return calculator(loan);
     }
   );
 

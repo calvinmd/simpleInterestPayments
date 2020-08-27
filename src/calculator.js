@@ -5,7 +5,7 @@ const _ = require("lodash");
 const moment = require("moment");
 
 const data = require("./data");
-const { loans, transactions } = data;
+const { transactions } = data;
 
 // show - or 0 or 0.00, put it in one place
 const ZERO = "-";
@@ -183,8 +183,7 @@ const getRemainingPayments = ({
   return _.compact(remaining);
 };
 
-const calculator = (id) => {
-  const loan = loans[id.toString()] || {};
+const calculator = (loan = {}) => {
   if (!loan) return {};
   // const { price, down, p, i, n, tax, fee, date } = loan;
   const monthlyPayment = getRegularPayment(loan);
