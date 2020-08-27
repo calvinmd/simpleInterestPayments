@@ -2,6 +2,11 @@
 
 Calculator for simple interest payments with support for extra payments
 
+Test with:
+
+- https://bjmmo.sse.codesandbox.io/sf?id=1
+- https://bjmmo.sse.codesandbox.io/csv?id=1
+
 # fastify-starter
 
 A starter template for creating an HTTP Fastify server with JavaScript. It includes example routes that demonstrate some of the basic features of Fastify. It also comes with unit tests powered by [tap](https://node-tap.org).

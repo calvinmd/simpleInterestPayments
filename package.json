@@ -1,7 +1,7 @@
 {
-  "name": "fastify-starter",
-  "version": "1.0.0",
-  "description": "Get started using Fastify with this basic template.",
+  "name": "simple-interest-calculator",
+  "version": "1.1.0",
+  "description": "",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/start.js",
@@ -17,13 +17,7 @@
     "tap": "^14.10.2",
     "nodemon": "^2.0.1"
   },
-  "keywords": [
-    "fastify",
-    "node.js",
-    "backend",
-    "server",
-    "http"
-  ],
+  "keywords": [],
   "eslintConfig": {
     "sourceType": "script"
   }
